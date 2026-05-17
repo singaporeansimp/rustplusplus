@@ -319,4 +319,34 @@ module.exports = {
                     }]
             }));
     },
+
+    getLinkingRemoveSelectMenu: function (guildId, serverId, alarmEntityId) {
+        const instance = Client.client.getInstance(guildId);
+        const alarm = instance.serverList[serverId].alarms[alarmEntityId];
+        const identifier = JSON.stringify({ "serverId": serverId, "alarmEntityId": alarmEntityId });
+        const linkedSwitches = alarm.linkedSwitches || [];
+
+        if (linkedSwitches.length === 0) return null;
+
+        const options = [];
+        for (const link of linkedSwitches) {
+            const switchEntity = instance.serverList[serverId].switches[link.entityId];
+            const switchName = switchEntity ? switchEntity.name : link.entityId;
+            const actionText = link.action ?
+                Client.client.intlGet(guildId, 'linkingActionOn') :
+                Client.client.intlGet(guildId, 'linkingActionOff');
+            options.push({
+                label: `${switchName} - ${actionText}`,
+                description: Client.client.intlGet(guildId, 'linkingRemoveLink'),
+                value: link.entityId
+            });
+        }
+
+        return new Discord.ActionRowBuilder().addComponents(
+            module.exports.getSelectMenu({
+                customId: `LinkingRemove${identifier}`,
+                placeholder: Client.client.intlGet(guildId, 'linkingRemoveLink'),
+                options: options
+            }));
+    },
 }

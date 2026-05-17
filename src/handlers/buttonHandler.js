@@ -1153,6 +1153,38 @@ module.exports = async (client, interaction) => {
 
         await DiscordMessages.sendTrackerMessage(guildId, ids.trackerId, interaction);
     }
+    else if (interaction.customId.startsWith('LinkingAdd')) {
+        const ids = JSON.parse(interaction.customId.replace('LinkingAdd', ''));
+        const server = instance.serverList[ids.serverId];
+
+        if (!server || (server && !server.alarms.hasOwnProperty(ids.alarmEntityId))) {
+            await interaction.message.delete();
+            return;
+        }
+
+        const modal = DiscordModals.getLinkingAddModal(guildId, ids.serverId, ids.alarmEntityId);
+        await interaction.showModal(modal);
+    }
+    else if (interaction.customId.startsWith('LinkingDelete')) {
+        const ids = JSON.parse(interaction.customId.replace('LinkingDelete', ''));
+        const server = instance.serverList[ids.serverId];
+
+        if (Config.discord.needAdminPrivileges && !client.isAdministrator(interaction)) {
+            interaction.deferUpdate();
+            return;
+        }
+
+        if (!server || (server && !server.alarms.hasOwnProperty(ids.alarmEntityId))) {
+            await interaction.message.delete();
+            return;
+        }
+
+        await DiscordTools.deleteMessageById(guildId, instance.channelId.linking,
+            server.alarms[ids.alarmEntityId].linkingMessageId);
+
+        delete server.alarms[ids.alarmEntityId].linkingMessageId;
+        client.setInstance(guildId, instance);
+    }
 
     client.log(client.intlGet(null, 'infoCap'), client.intlGet(null, 'userButtonInteractionSuccess', {
         id: `${verifyId}`

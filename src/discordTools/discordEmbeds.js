@@ -1408,4 +1408,47 @@ module.exports = {
 
         return embed;
     },
+
+    getLinkingEmbed: function (guildId, serverId, alarmEntityId) {
+        const instance = Client.client.getInstance(guildId);
+        const alarm = instance.serverList[serverId].alarms[alarmEntityId];
+        const grid = alarm.location !== null ? ` (${alarm.location})` : '';
+
+        const linkedSwitches = alarm.linkedSwitches || [];
+        const fields = [];
+
+        if (linkedSwitches.length === 0) {
+            fields.push({
+                name: Client.client.intlGet(guildId, 'linkingLinkedSwitches'),
+                value: Client.client.intlGet(guildId, 'linkingNoLinks'),
+                inline: false
+            });
+        }
+        else {
+            let linksText = '';
+            for (const link of linkedSwitches) {
+                const switchEntity = instance.serverList[serverId].switches[link.entityId];
+                const switchName = switchEntity ? switchEntity.name : link.entityId;
+                const actionText = link.action ?
+                    Client.client.intlGet(guildId, 'linkingActionOn') :
+                    Client.client.intlGet(guildId, 'linkingActionOff');
+                linksText += `**${switchName}**: ${actionText}\n`;
+            }
+            fields.push({
+                name: Client.client.intlGet(guildId, 'linkingLinkedSwitches'),
+                value: linksText.trim(),
+                inline: false
+            });
+        }
+
+        return module.exports.getEmbed({
+            title: Client.client.intlGet(guildId, 'linkingTitle', { alarm: `${alarm.name}${grid}` }),
+            color: Constants.COLOR_DEFAULT,
+            description: `**Alarm ID**: \`${alarmEntityId}\``,
+            thumbnail: `attachment://${alarm.image}`,
+            footer: { text: `${alarm.server}` },
+            fields: fields,
+            timestamp: true
+        });
+    },
 }

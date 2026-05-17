@@ -344,4 +344,32 @@ module.exports = {
 
         return modal;
     },
+
+    getLinkingAddModal(guildId, serverId, alarmEntityId) {
+        const instance = Client.client.getInstance(guildId);
+        const alarm = instance.serverList[serverId].alarms[alarmEntityId];
+        const identifier = JSON.stringify({ "serverId": serverId, "alarmEntityId": alarmEntityId });
+
+        const modal = module.exports.getModal({
+            customId: `LinkingAdd${identifier}`,
+            title: Client.client.intlGet(guildId, 'linkingLinkSwitch')
+        });
+
+        modal.addComponents(
+            new Discord.ActionRowBuilder().addComponents(TextInput.getTextInput({
+                customId: 'LinkingSwitchEntityId',
+                label: Client.client.intlGet(guildId, 'linkingSwitchEntityId'),
+                value: '',
+                style: Discord.TextInputStyle.Short
+            })),
+            new Discord.ActionRowBuilder().addComponents(TextInput.getTextInput({
+                customId: 'LinkingSwitchAction',
+                label: Client.client.intlGet(guildId, 'linkingSwitchAction'),
+                value: 'on',
+                style: Discord.TextInputStyle.Short
+            }))
+        );
+
+        return modal;
+    },
 }

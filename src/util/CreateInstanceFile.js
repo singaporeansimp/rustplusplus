@@ -44,7 +44,8 @@ module.exports = (client, guild) => {
                 alarms: null,
                 storageMonitors: null,
                 activity: null,
-                trackers: null
+                trackers: null,
+                linking: null
             },
             informationMessageId: {
                 map: null,
@@ -128,7 +129,8 @@ module.exports = (client, guild) => {
                 alarms: null,
                 storageMonitors: null,
                 activity: null,
-                trackers: null
+                trackers: null,
+                linking: null
             }
         }
         else {
@@ -145,6 +147,7 @@ module.exports = (client, guild) => {
             if (!instance.channelId.hasOwnProperty('storageMonitors')) instance.channelId.storageMonitors = null;
             if (!instance.channelId.hasOwnProperty('activity')) instance.channelId.activity = null;
             if (!instance.channelId.hasOwnProperty('trackers')) instance.channelId.trackers = null;
+            if (!instance.channelId.hasOwnProperty('linking')) instance.channelId.linking = null;
         }
 
         if (!instance.hasOwnProperty('informationMessageId')) {
@@ -203,6 +206,12 @@ module.exports = (client, guild) => {
     /* Check every serverList for missing keys */
     for (const [serverId, content] of Object.entries(instance.serverList)) {
         if (!content.hasOwnProperty('customCameraGroups')) content.customCameraGroups = {};
+
+        for (const entityId in content.alarms) {
+            if (!content.alarms[entityId].hasOwnProperty('linkedSwitches')) {
+                content.alarms[entityId].linkedSwitches = [];
+            }
+        }
     }
 
     client.setInstance(guild.id, instance);

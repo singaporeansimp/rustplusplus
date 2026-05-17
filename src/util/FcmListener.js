@@ -342,7 +342,9 @@ async function pairingEntitySmartAlarm(client, guild, title, message, body) {
         image: entityExist ? alarms[body.entityId].image : 'smart_alarm.png',
         location: entityExist ? alarms[body.entityId].location : null,
         server: entityExist ? alarms[body.entityId].server : body.name,
-        messageId: entityExist ? alarms[body.entityId].messageId : null
+        messageId: entityExist ? alarms[body.entityId].messageId : null,
+        linkedSwitches: entityExist && alarms[body.entityId].linkedSwitches ?
+            alarms[body.entityId].linkedSwitches : []
     };
     client.setInstance(guild.id, instance);
 

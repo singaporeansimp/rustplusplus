@@ -83,6 +83,7 @@
     "ceilingLight": "Stropní světlo",
     "channelNameActivity": "aktivita",
     "channelNameAlarms": "alarmy",
+    "channelNameLinking": "linking",
     "channelNameCommands": "commands",
     "channelNameEvents": "events",
     "channelNameInformation": "informace",

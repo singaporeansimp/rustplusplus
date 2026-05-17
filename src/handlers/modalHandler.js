@@ -390,6 +390,50 @@ module.exports = async (client, interaction) => {
 
         await DiscordMessages.sendTrackerMessage(interaction.guildId, ids.trackerId);
     }
+    else if (interaction.customId.startsWith('LinkingAdd')) {
+        const ids = JSON.parse(interaction.customId.replace('LinkingAdd', ''));
+        const server = instance.serverList[ids.serverId];
+        const switchEntityId = interaction.fields.getTextInputValue('LinkingSwitchEntityId');
+        const actionStr = interaction.fields.getTextInputValue('LinkingSwitchAction').toLowerCase().trim();
+
+        if (!server || (server && !server.alarms.hasOwnProperty(ids.alarmEntityId))) {
+            interaction.deferUpdate();
+            return;
+        }
+
+        if (!server.switches.hasOwnProperty(switchEntityId)) {
+            const str = client.intlGet(guildId, 'linkingSwitchNotFound', { entityId: switchEntityId });
+            await client.interactionEditReply(interaction, DiscordEmbeds.getActionInfoEmbed(1, str));
+            client.log(client.intlGet(null, 'errorCap'), str, 'error');
+            return;
+        }
+
+        if (actionStr !== 'on' && actionStr !== 'off') {
+            const str = client.intlGet(guildId, 'linkingInvalidAction');
+            await client.interactionEditReply(interaction, DiscordEmbeds.getActionInfoEmbed(1, str));
+            client.log(client.intlGet(null, 'errorCap'), str, 'error');
+            return;
+        }
+
+        const action = actionStr === 'on';
+        const linkedSwitches = server.alarms[ids.alarmEntityId].linkedSwitches;
+        const existingLink = linkedSwitches.find(l => l.entityId === switchEntityId);
+        if (existingLink) {
+            existingLink.action = action;
+        }
+        else {
+            linkedSwitches.push({ entityId: switchEntityId, action: action });
+        }
+        client.setInstance(guildId, instance);
+
+        const switchName = server.switches[switchEntityId].name;
+        const alarmName = server.alarms[ids.alarmEntityId].name;
+        client.log(client.intlGet(null, 'infoCap'), client.intlGet(guildId, 'linkingAddSuccess', {
+            name: switchName, alarm: alarmName, action: actionStr
+        }));
+
+        await DiscordMessages.sendLinkingMessage(interaction.guildId, ids.serverId, ids.alarmEntityId);
+    }
 
     client.log(client.intlGet(null, 'infoCap'), client.intlGet(null, 'userModalInteractionSuccess', {
         id: `${verifyId}`

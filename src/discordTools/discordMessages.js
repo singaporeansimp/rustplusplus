@@ -139,6 +139,32 @@ module.exports = {
         }
     },
 
+    sendLinkingMessage: async function (guildId, serverId, alarmEntityId, interaction = null) {
+        const instance = Client.client.getInstance(guildId);
+        const alarm = instance.serverList[serverId].alarms[alarmEntityId];
+
+        const components = [DiscordButtons.getLinkingButtons(guildId, serverId, alarmEntityId)];
+        const removeSelectMenu = DiscordSelectMenus.getLinkingRemoveSelectMenu(
+            guildId, serverId, alarmEntityId);
+        if (removeSelectMenu) components.push(removeSelectMenu);
+
+        const content = {
+            embeds: [DiscordEmbeds.getLinkingEmbed(guildId, serverId, alarmEntityId)],
+            components: components,
+            files: [new Discord.AttachmentBuilder(
+                Path.join(__dirname, '..', `resources/images/electrics/${alarm.image}`))]
+        }
+
+        const linkingMessageId = alarm.linkingMessageId || null;
+        const message = await module.exports.sendMessage(guildId, content, linkingMessageId,
+            instance.channelId.linking, interaction);
+
+        if (!interaction) {
+            instance.serverList[serverId].alarms[alarmEntityId].linkingMessageId = message.id;
+            Client.client.setInstance(guildId, instance);
+        }
+    },
+
     sendStorageMonitorMessage: async function (guildId, serverId, entityId, interaction = null) {
         let instance = Client.client.getInstance(guildId);
         const entity = instance.serverList[serverId].storageMonitors[entityId];

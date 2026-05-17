@@ -56,7 +56,10 @@ module.exports = {
 				.setDescription(client.intlGet(guildId, 'commandsResetStorageMonitorsDesc')))
 			.addSubcommand(subcommand => subcommand
 				.setName('trackers')
-				.setDescription(client.intlGet(guildId, 'commandsResetTrackersDesc')));
+				.setDescription(client.intlGet(guildId, 'commandsResetTrackersDesc')))
+			.addSubcommand(subcommand => subcommand
+				.setName('linking')
+				.setDescription(client.intlGet(guildId, 'commandsResetLinkingDesc')));
 	},
 
 	async execute(client, interaction) {
@@ -96,6 +99,7 @@ module.exports = {
 				await DiscordTools.clearTextChannel(guild.id, instance.channelId.switches, 100);
 				await DiscordTools.clearTextChannel(guild.id, instance.channelId.switchGroups, 100);
 				await DiscordTools.clearTextChannel(guild.id, instance.channelId.storageMonitors, 100);
+				await DiscordTools.clearTextChannel(guild.id, instance.channelId.linking, 100);
 
 				const rustplus = client.rustplusInstances[guild.id];
 				if (rustplus && rustplus.isOperational) {
@@ -111,6 +115,7 @@ module.exports = {
 					await require('../discordTools/SetupSwitchGroups')(client, rustplus);
 					await require('../discordTools/SetupAlarms')(client, rustplus);
 					await require('../discordTools/SetupStorageMonitors')(client, rustplus);
+					await require('../discordTools/SetupLinking')(client, rustplus);
 				}
 
 				await require('../discordTools/SetupTrackers')(client, guild);
@@ -209,6 +214,7 @@ module.exports = {
 				const rustplus = client.rustplusInstances[guild.id];
 				if (rustplus && rustplus.isOperational) {
 					await require('../discordTools/SetupAlarms')(client, rustplus);
+					await require('../discordTools/SetupLinking')(client, rustplus);
 				}
 
 				client.log(client.intlGet(null, 'infoCap'), client.intlGet(null, 'slashCommandValueChange', {
@@ -259,6 +265,20 @@ module.exports = {
 				client.log(client.intlGet(null, 'infoCap'), client.intlGet(null, 'slashCommandValueChange', {
 					id: `${verifyId}`,
 					value: `trackers`
+				}));
+			} break;
+
+			case 'linking': {
+				await DiscordTools.clearTextChannel(guild.id, instance.channelId.linking, 100);
+
+				const rustplus = client.rustplusInstances[guild.id];
+				if (rustplus && rustplus.isOperational) {
+					await require('../discordTools/SetupLinking')(client, rustplus);
+				}
+
+				client.log(client.intlGet(null, 'infoCap'), client.intlGet(null, 'slashCommandValueChange', {
+					id: `${verifyId}`,
+					value: `linking`
 				}));
 			} break;
 

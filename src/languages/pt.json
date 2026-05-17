@@ -83,6 +83,7 @@
     "ceilingLight": "Luz de Teto",
     "channelNameActivity": "atividade",
     "channelNameAlarms": "alarmes",
+    "channelNameLinking": "linking",
     "channelNameCommands": "comandos",
     "channelNameEvents": "eventos",
     "channelNameInformation": "informação",

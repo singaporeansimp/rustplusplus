@@ -150,6 +150,31 @@ module.exports = async (client, interaction) => {
 
         DiscordMessages.sendSmartSwitchMessage(guildId, ids.serverId, ids.entityId, interaction);
     }
+    else if (interaction.customId.startsWith('LinkingRemove')) {
+        const ids = JSON.parse(interaction.customId.replace('LinkingRemove', ''));
+        const server = instance.serverList[ids.serverId];
+
+        if (!server || (server && !server.alarms.hasOwnProperty(ids.alarmEntityId))) {
+            await interaction.message.delete();
+            return;
+        }
+
+        const switchEntityId = interaction.values[0];
+        const linkedSwitches = server.alarms[ids.alarmEntityId].linkedSwitches;
+        const switchName = server.switches.hasOwnProperty(switchEntityId) ?
+            server.switches[switchEntityId].name : switchEntityId;
+        const alarmName = server.alarms[ids.alarmEntityId].name;
+
+        server.alarms[ids.alarmEntityId].linkedSwitches =
+            linkedSwitches.filter(l => l.entityId !== switchEntityId);
+        client.setInstance(guildId, instance);
+
+        client.log(client.intlGet(null, 'infoCap'), client.intlGet(guildId, 'linkingRemoveSuccess', {
+            name: switchName, alarm: alarmName
+        }));
+
+        await DiscordMessages.sendLinkingMessage(guildId, ids.serverId, ids.alarmEntityId, interaction);
+    }
 
     client.log(client.intlGet(null, 'infoCap'), client.intlGet(null, 'userSelectMenuInteractionSuccess', {
         id: `${verifyId}`

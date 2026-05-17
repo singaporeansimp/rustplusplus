@@ -564,4 +564,22 @@ module.exports = {
                     style: instance.generalSettings.battlemetricsGlobalLogout ? SUCCESS : DANGER
                 }))];
     },
+
+    getLinkingButtons: function (guildId, serverId, alarmEntityId) {
+        const instance = Client.client.getInstance(guildId);
+        const alarm = instance.serverList[serverId].alarms[alarmEntityId];
+        const identifier = JSON.stringify({ "serverId": serverId, "alarmEntityId": alarmEntityId });
+
+        return new Discord.ActionRowBuilder().addComponents(
+            module.exports.getButton({
+                customId: `LinkingAdd${identifier}`,
+                label: Client.client.intlGet(guildId, 'linkingLinkSwitch'),
+                style: PRIMARY
+            }),
+            module.exports.getButton({
+                customId: `LinkingDelete${identifier}`,
+                style: SECONDARY,
+                emoji: '🗑️'
+            }));
+    },
 }

@@ -102,6 +102,7 @@ module.exports = {
         await require('../discordTools/SetupSwitchGroups')(client, rustplus);
         await require('../discordTools/SetupAlarms')(client, rustplus);
         await require('../discordTools/SetupStorageMonitors')(client, rustplus);
+        await require('../discordTools/SetupLinking')(client, rustplus);
         rustplus.isNewConnection = false;
         rustplus.loadMarkers();
 
