@@ -1451,4 +1451,63 @@ module.exports = {
             timestamp: true
         });
     },
+
+    getRaidAlertEmbed: function (guildId, serverId, alarmEntityId) {
+        const instance = Client.client.getInstance(guildId);
+        const server = instance.serverList[serverId];
+        const alarm = server.alarms[alarmEntityId];
+        const grid = alarm.location !== null ? ` (${alarm.location})` : '';
+
+        const fields = [];
+
+        fields.push({
+            name: Client.client.intlGet(guildId, 'raidAlertMessage'),
+            value: `\`${alarm.message}\``,
+            inline: true
+        });
+
+        if (server.connect) {
+            fields.push({
+                name: Client.client.intlGet(guildId, 'raidAlertConnect'),
+                value: `\`${server.connect}\``,
+                inline: true
+            });
+        }
+
+        if (alarm.location !== null) {
+            fields.push({
+                name: Client.client.intlGet(guildId, 'raidAlertLocation'),
+                value: `\`${alarm.location}\``,
+                inline: true
+            });
+        }
+
+        const linkedSwitches = alarm.linkedSwitches || [];
+        if (linkedSwitches.length > 0) {
+            let linksText = '';
+            for (const link of linkedSwitches) {
+                const switchEntity = server.switches[link.entityId];
+                const switchName = switchEntity ? switchEntity.name : link.entityId;
+                const actionText = link.action ?
+                    Client.client.intlGet(guildId, 'linkingActionOn') :
+                    Client.client.intlGet(guildId, 'linkingActionOff');
+                linksText += `**${switchName}**: ${actionText}\n`;
+            }
+            fields.push({
+                name: Client.client.intlGet(guildId, 'raidAlertLinkedSwitches'),
+                value: linksText.trim(),
+                inline: false
+            });
+        }
+
+        return module.exports.getEmbed({
+            title: Client.client.intlGet(guildId, 'raidAlertTitle', { alarm: `${alarm.name}${grid}` }),
+            color: Constants.COLOR_PATROL_HELICOPTER_ENTERS_MAP,
+            description: `**${server.title}**`,
+            thumbnail: `attachment://${alarm.image}`,
+            footer: { text: server.title, iconURL: server.img },
+            fields: fields,
+            timestamp: true
+        });
+    },
 }

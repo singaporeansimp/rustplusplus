@@ -59,7 +59,10 @@ module.exports = {
 				.setDescription(client.intlGet(guildId, 'commandsResetTrackersDesc')))
 			.addSubcommand(subcommand => subcommand
 				.setName('linking')
-				.setDescription(client.intlGet(guildId, 'commandsResetLinkingDesc')));
+				.setDescription(client.intlGet(guildId, 'commandsResetLinkingDesc')))
+			.addSubcommand(subcommand => subcommand
+				.setName('raidalerts')
+				.setDescription(client.intlGet(guildId, 'commandsResetRaidAlertsDesc')));
 	},
 
 	async execute(client, interaction) {
@@ -100,6 +103,7 @@ module.exports = {
 				await DiscordTools.clearTextChannel(guild.id, instance.channelId.switchGroups, 100);
 				await DiscordTools.clearTextChannel(guild.id, instance.channelId.storageMonitors, 100);
 				await DiscordTools.clearTextChannel(guild.id, instance.channelId.linking, 100);
+				await DiscordTools.clearTextChannel(guild.id, instance.channelId.raidAlerts, 100);
 
 				const rustplus = client.rustplusInstances[guild.id];
 				if (rustplus && rustplus.isOperational) {
@@ -279,6 +283,15 @@ module.exports = {
 				client.log(client.intlGet(null, 'infoCap'), client.intlGet(null, 'slashCommandValueChange', {
 					id: `${verifyId}`,
 					value: `linking`
+				}));
+			} break;
+
+			case 'raidalerts': {
+				await DiscordTools.clearTextChannel(guild.id, instance.channelId.raidAlerts, 100);
+
+				client.log(client.intlGet(null, 'infoCap'), client.intlGet(null, 'slashCommandValueChange', {
+					id: `${verifyId}`,
+					value: `raidalerts`
 				}));
 			} break;
 

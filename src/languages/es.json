@@ -84,6 +84,7 @@
     "channelNameActivity": "actividad",
     "channelNameAlarms": "alarmas",
     "channelNameLinking": "linking",
+    "channelNameRaidAlerts": "raid-alerts",
     "channelNameCommands": "comandos",
     "channelNameEvents": "eventos",
     "channelNameInformation": "información",

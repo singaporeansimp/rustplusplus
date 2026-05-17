@@ -84,6 +84,7 @@
     "channelNameActivity": "aktivita",
     "channelNameAlarms": "alarmy",
     "channelNameLinking": "linking",
+    "channelNameRaidAlerts": "raid-alerts",
     "channelNameCommands": "commands",
     "channelNameEvents": "events",
     "channelNameInformation": "informace",

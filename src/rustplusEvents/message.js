@@ -198,6 +198,8 @@ async function messageBroadcastEntityChangedSmartAlarm(rustplus, client, message
                     rustplus, client, link.entityId, link.action);
             }
         }
+
+        await DiscordMessages.sendRaidAlertMessage(rustplus.guildId, serverId, entityId);
     }
 
     DiscordMessages.sendSmartAlarmMessage(rustplus.guildId, rustplus.serverId, entityId);
