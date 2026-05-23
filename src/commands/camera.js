@@ -96,7 +96,9 @@ module.exports = {
                 instance.serverList[serverId].cameras[identifier] = {
                     identifier: identifier,
                     name: name,
-                    reachable: true
+                    reachable: true,
+                    frame: 0,
+                    messageId: null
                 };
                 client.setInstance(interaction.guildId, instance);
 
