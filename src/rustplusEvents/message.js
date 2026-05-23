@@ -139,7 +139,9 @@ async function messageBroadcastEntityChanged(rustplus, client, message) {
 }
 
 async function messageBroadcastCameraRays(rustplus, client, message) {
-    /* Not implemented */
+    rustplus.cameraRayDataReceived = true;
+    const CameraHandler = require('../handlers/cameraHandler.js');
+    await CameraHandler.processCameraRays(rustplus, client, message);
 }
 
 async function messageBroadcastEntityChangedSmartSwitch(rustplus, client, message) {

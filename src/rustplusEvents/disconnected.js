@@ -49,6 +49,10 @@ module.exports = {
         clearInterval(rustplus.tokensReplenishTaskId);
         clearTimeout(rustplus.inGameChatTimeout);
 
+        /* Stop camera cycling */
+        const CameraHandler = require('../handlers/cameraHandler.js');
+        CameraHandler.stopCycling(rustplus);
+
         /* Reset map markers, timers & arrays */
         if (rustplus.mapMarkers) rustplus.mapMarkers.reset();
 

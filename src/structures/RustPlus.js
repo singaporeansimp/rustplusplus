@@ -102,6 +102,14 @@ class RustPlus extends RustPlusLib {
         this.patrolHelicopterTracers = new Object();
         this.cargoShipTracers = new Object();
 
+        /* Camera cycling variables */
+        this.cameraCyclingActive = false;
+        this.cameraCyclingTaskId = null;
+        this.cameraCyclingIndex = 0;
+        this.cameraCurrentSubscription = null;
+        this.cameraRayDataReceived = false;
+        this.cameraSeenPlayers = {};
+
         /* Rustplus structures */
         this.map = null;            /* Stores the Map structure. */
         this.info = null;           /* Stores the Info structure. */

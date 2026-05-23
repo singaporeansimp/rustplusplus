@@ -1510,4 +1510,28 @@ module.exports = {
             timestamp: true
         });
     },
+
+    getCameraPlayerSightingEmbed: function (guildId, serverId, identifier, cameraName, playerName) {
+        const instance = Client.client.getInstance(guildId);
+        const server = instance.serverList[serverId];
+
+        return module.exports.getEmbed({
+            color: Constants.COLOR_ACTIVE,
+            title: Client.client.intlGet(guildId, 'cameraPlayerSighted'),
+            footer: { text: server.title, iconURL: server.img },
+            fields: [
+                {
+                    name: Client.client.intlGet(guildId, 'camera'),
+                    value: `\`${cameraName} (${identifier})\``,
+                    inline: true
+                },
+                {
+                    name: Client.client.intlGet(guildId, 'cameraPlayer'),
+                    value: `\`${playerName}\``,
+                    inline: true
+                }
+            ],
+            timestamp: true
+        });
+    },
 }

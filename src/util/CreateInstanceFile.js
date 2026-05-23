@@ -46,7 +46,8 @@ module.exports = (client, guild) => {
                 activity: null,
                 trackers: null,
                 linking: null,
-                raidAlerts: null
+                raidAlerts: null,
+                cameras: null
             },
             informationMessageId: {
                 map: null,
@@ -132,7 +133,8 @@ module.exports = (client, guild) => {
                 activity: null,
                 trackers: null,
                 linking: null,
-                raidAlerts: null
+                raidAlerts: null,
+                cameras: null
             }
         }
         else {
@@ -151,6 +153,7 @@ module.exports = (client, guild) => {
             if (!instance.channelId.hasOwnProperty('trackers')) instance.channelId.trackers = null;
             if (!instance.channelId.hasOwnProperty('linking')) instance.channelId.linking = null;
             if (!instance.channelId.hasOwnProperty('raidAlerts')) instance.channelId.raidAlerts = null;
+            if (!instance.channelId.hasOwnProperty('cameras')) instance.channelId.cameras = null;
         }
 
         if (!instance.hasOwnProperty('informationMessageId')) {
@@ -215,6 +218,8 @@ module.exports = (client, guild) => {
                 content.alarms[entityId].linkedSwitches = [];
             }
         }
+
+        if (!content.hasOwnProperty('cameras')) content.cameras = {};
     }
 
     client.setInstance(guild.id, instance);

@@ -194,6 +194,17 @@ module.exports = {
         await module.exports.sendMessage(guildId, content, null, instance.channelId.raidAlerts);
     },
 
+    sendCameraPlayerSightingMessage: async function (guildId, serverId, identifier, cameraName, playerName) {
+        const instance = Client.client.getInstance(guildId);
+
+        const content = {
+            embeds: [DiscordEmbeds.getCameraPlayerSightingEmbed(
+                guildId, serverId, identifier, cameraName, playerName)]
+        }
+
+        await module.exports.sendMessage(guildId, content, null, instance.channelId.cameras);
+    },
+
     sendStorageMonitorMessage: async function (guildId, serverId, entityId, interaction = null) {
         let instance = Client.client.getInstance(guildId);
         const entity = instance.serverList[serverId].storageMonitors[entityId];
